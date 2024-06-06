@@ -1,0 +1,8 @@
+# Entity specifics
+PLAYER_HEALTH = 100
+ENEMY_HEALTH = 10
+PROJECTILE_DAMAGE = 1
+
+# Screen dimensions
+SCREEN_WIDTH = 1000
+SCREEN_HEIGHT = 600
