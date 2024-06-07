@@ -66,36 +66,51 @@ class Player(Sprite):
         super().__init__()
 
         self.__health = PLAYER_HEALTH
-        self._position = (x, y)
+        self.__position = (x, y)
         self.image = pygame.image.load("spaceship.png")
         self.rect = self.image.get_rect(midbottom=(x, y))
     
-    def shoot(self):
-        pass
+    def shoot(self) -> None:
+        projectile = Projectile(PROJECTILE_DAMAGE, 
+                                self.__position[0], 
+                                self.__position[1] - 75)
+        return projectile
 
-    def move(self, direction):
-        if direction == "A":
+    def move(self):
+        keys = pygame.key.get_pressed()
+
+        if keys[pygame.K_a]:
             self.rect.x -= 10
-        elif direction == "B":
+            self.__position = (self.rect.x, self.__position[1])
+        
+        if keys[pygame.K_d]:
             self.rect.x += 10
     
-    def update(self, direction):
-        self.move(direction)
+    def update(self):
+        self.move()
 
 class Projectile(Sprite):
-    def __init__(self, damage, position) -> None:
+    def __init__(self, damage, x, y) -> None:
+        super().__init__()
+
         self.damage = damage
-        self.position = position
+        self.position = (x, y)
+
+        self.image = pygame.image.load("projectile.png")
+        self.rect = self.image.get_rect(midbottom=(x, y))
     
     def check_collision(self, enemy):
         pass
+
+    def update(self):
+        self.rect.y -= PROJECTILE_SPEED
 
 class Game():
     def __init__(self) -> None:
         self.__score = 0
         self.level = 0
-        self.__enemy_list = []
-        self.__projectile_list = []
+        self.enemy_list = []
+        self.projectile_list = []
     
     def generate_enemies(self):
         pass

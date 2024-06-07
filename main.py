@@ -16,20 +16,25 @@ player = Player(500, 550)
 player_group = pygame.sprite.GroupSingle()
 player_group.add(player)
 
+projectile_group = pygame.sprite.Group()
+
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit(); sys.exit()
-    
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_a]:
-        player.grou
-    
-    if keys[pygame.K_d]:
-        player.move('D')
 
-    # Frame updates go here
+    # Update
+    if pygame.key.get_pressed()[pygame.K_SPACE]:
+        new = player.shoot()
+        projectile_group.add(new)
+
+    player_group.update()
+    projectile_group.update()
+
+    # Draw
+    game_screen.fill(BLACK)
     player_group.draw(game_screen)
+    projectile_group.draw(game_screen)
 
     pygame.display.update() 
     clock.tick(30)
