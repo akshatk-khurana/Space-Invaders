@@ -7,9 +7,9 @@ from pygame.sprite import Sprite
 class Enemy(ABC):
     def __init__(self, x, y) -> None:
         self.__health = ENEMY_HEALTH
-        self.__position = (x, y)
+        self.position = (x, y)
         self.rarity = None
-        self.__name = "Enemy"
+        self.name = "Enemy"
 
     @abstractmethod
     def move(self):
@@ -68,13 +68,19 @@ class Player(Sprite):
         self.__health = PLAYER_HEALTH
         self._position = (x, y)
         self.image = pygame.image.load("spaceship.png")
-        self.rect = self.image.get_rect(midbottom=(0, 0))
+        self.rect = self.image.get_rect(midbottom=(x, y))
     
     def shoot(self):
         pass
 
-    def move(self):
-        pass
+    def move(self, direction):
+        if direction == "A":
+            self.rect.x -= 10
+        elif direction == "B":
+            self.rect.x += 10
+    
+    def update(self, direction):
+        self.move(direction)
 
 class Projectile(Sprite):
     def __init__(self, damage, position) -> None:
@@ -87,7 +93,7 @@ class Projectile(Sprite):
 class Game():
     def __init__(self) -> None:
         self.__score = 0
-        self.__level = 0
+        self.level = 0
         self.__enemy_list = []
         self.__projectile_list = []
     
@@ -98,4 +104,7 @@ class Game():
         return False
 
     def on_game_over(self):
+        pass
+
+    def update_score(self, amount):
         pass
