@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from settings import *
+import pygame
 
 from pygame.sprite import Sprite
 
@@ -66,8 +67,8 @@ class Player(Sprite):
 
         self.__health = PLAYER_HEALTH
         self._position = (x, y)
-        self.image = pygame.image.load("player.png")
-        self.rect = self.image.get_rect(midbottom=(500, 500))
+        self.image = pygame.image.load("spaceship.png")
+        self.rect = self.image.get_rect(midbottom=(0, 0))
     
     def shoot(self):
         pass
