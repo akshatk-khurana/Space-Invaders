@@ -1,8 +1,15 @@
 # Enemy
-RARE_ENEMY_HEALTH = 10
+COMMON_ENEMY_HEALTH = 2
+RARE_ENEMY_HEALTH = 8
+ULTRA_RARE_ENEMY_HEALTH = 16
+
+# Points
+POINTS = {"Common": 10,
+          "Rare": 20,
+          "Ultra Rare": 50}
 
 # Player
-PLAYER_HEALTH = 50
+PLAYER_HEALTH = 32
 
 # Projectile
 PROJECTILE_DAMAGE = 1
@@ -14,3 +21,4 @@ SCREEN_HEIGHT = 600
 
 # Colours
 BLACK = (0, 0, 0)
+ASSETS_PATH = "Assets/"

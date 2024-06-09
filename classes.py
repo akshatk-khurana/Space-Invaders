@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
 from settings import *
 import pygame
-import random
 from pygame.sprite import Sprite, Group, GroupSingle
 
 class Enemy(ABC):
@@ -21,33 +20,48 @@ class Enemy(ABC):
 
     def take_damage(self, amount):
         self.health -= amount
-        print(self.health)
+
+    def update(self):
+        if (self.health == 0):
+            self.kill()
+        self.move()
+
+    def kill(self):
+        rarity = self.rarity
+        Sprite.kill()
+        return POINTS[rarity]
 
     def __repr__(self) -> str:
         return self.name
 
 class Common_Enemy(Enemy, Sprite):
-    def __init__(self):
-        super().__init__()
-        self.__name = "Common Enemy"
+    def __init__(self, x, y):
+        Sprite.__init__(self)
+        Enemy.__init__(self)
+
+        self.health = COMMON_ENEMY_HEALTH
+        self.name = "Common Enemy"
         self.rarity = "Common"
+        self.points = POINTS[rarity]
+
+        self.image = pygame.image.load(ASSETS_PATH + "common_enemy.png")
+        self.rect = self.image.get_rect(midbottom=(x, y))
 
     def move(self):
         pass
     
     def shoot(self):
         pass
-
 class Rare_Enemy(Sprite, Enemy):
     def __init__(self, x, y):
-        Enemy.__init__(self)
         Sprite.__init__(self)
+        Enemy.__init__(self)
 
         self.health = RARE_ENEMY_HEALTH
         self.name = "Rare Enemy"
         self.rarity = "Rare"
 
-        self.image = pygame.image.load("rare_enemy.png")
+        self.image = pygame.image.load(ASSETS_PATH + "rare_enemy.png")
         self.rect = self.image.get_rect(midbottom=(x, y))
 
         self.direction = "R"
@@ -69,20 +83,24 @@ class Rare_Enemy(Sprite, Enemy):
         pass
 
     def update(self):
-        if (self.health == 0):
-            self.kill()
-        self.move()
-
-    def __repr__(self) -> str:
-        return Enemy.__repr__(self)
+        Enemy.update(self)
 class Ultra_Rare_Enemy(Enemy, Sprite):
-    def __init__(self):
-        super().__init__()
-        self.__name = "Ultra Rare Enemy"
-        self.rarity = "Rare"
-    
+    def __init__(self, x, y):
+        Sprite.__init__(self)
+        Enemy.__init__(self)
+
+        self.health = ULTRA_RARE_ENEMY_HEALTH
+        self.name = "Ultra Rare Enemy"
+        self.rarity = "Ultra Rare"
+
+        self.image = pygame.image.load(ASSETS_PATH + "ultra_rare_enemy.png")
+        self.rect = self.image.get_rect(midbottom=(x, y))
+
     def move(self):
-        pass
+        if self.rect.x > SCREEN_WIDTH:
+            self.kill()
+        else:
+            self.rect.x += 0.5
 
     def shoot(self):
         pass
@@ -91,7 +109,7 @@ class Player(Sprite):
     def __init__(self, x, y):
         super().__init__()
         self.__health = PLAYER_HEALTH
-        self.image = pygame.image.load("spaceship.png")
+        self.image = pygame.image.load(ASSETS_PATH + "spaceship.png")
         self.rect = self.image.get_rect(midbottom=(x, y))
     
     def shoot(self) -> None:
@@ -119,7 +137,7 @@ class Projectile(Sprite):
 
         self.damage = damage
 
-        self.image = pygame.image.load("projectile.png")
+        self.image = pygame.image.load(ASSETS_PATH + "projectile.png")
         self.rect = self.image.get_rect(midbottom=(x, y))
     
     def check_collision(self, enemy):
@@ -147,20 +165,24 @@ class Game():
     def generate_enemies(self):
         pos = 50
         for i in range(10):
-            new = Rare_Enemy(pos, 50)
+            new = Common_Enemy(pos, 100)
             self.enemy_list.add(new)
-            pos += 70
+            pos += 100
+        new = Ultra_Rare_Enemy(50, 50)
+        self.enemy_list.add(new)
 
     def is_game_over(self):
-        return False
+        pass
 
     def on_game_over(self):
         pass
 
-    def update_score(self, amount):
-        self.__score += amount
+    def update_groups(self, time):
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_SPACE] and time % 10 == 0:
+            new = self.player_group.sprites()[0].shoot()
+            self.projectile_list.add(new)
 
-    def update_groups(self):
         self.player_group.update()
         self.projectile_list.update()
         self.enemy_list.update()
@@ -170,3 +192,11 @@ class Game():
         self.player_group.draw(self.screen)
         self.projectile_list.draw(self.screen)
         self.enemy_list.draw(self.screen)
+
+    def check_collisions(self):
+        for projectile in self.projectile_list:
+            for enemy in self.enemy_list:
+                self.__score += projectile.check_collision(enemy)
+                print(self.__score)
+
+                
