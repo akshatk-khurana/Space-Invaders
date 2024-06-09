@@ -3,38 +3,40 @@ import sys
 from settings import *
 from classes import *
 
-
-# Set up pygame
+# Set up game screen
 pygame.init()
-game_screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-pygame.display.set_caption("Space Invaders")
 clock = pygame.time.Clock()
 
+# Instantiate Game and Player classes
 game = Game()
 player = Player(500, 550)
 
-player_group = pygame.sprite.GroupSingle()
-player_group.add(player)
-
-projectile_group = pygame.sprite.Group()
-
+game.player_group.add(player)
+game.generate_enemies()
+# Booleans
+timer = 0
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit(); sys.exit()
 
-    # Update
     if pygame.key.get_pressed()[pygame.K_SPACE]:
-        new = player.shoot()
-        projectile_group.add(new)
+        if timer == 0:
+            new = player.shoot()
+            game.projectile_list.add(new)
+    
+    timer = 4 if timer == 0 else timer - 1
 
-    player_group.update()
-    projectile_group.update()
+    for projectile in game.projectile_list:
+        for enemy in game.enemy_list:
+            print(enemy)
+            projectile.check_collision(enemy)
+
+    # Update
+    game.update_groups()
 
     # Draw
-    game_screen.fill(BLACK)
-    player_group.draw(game_screen)
-    projectile_group.draw(game_screen)
+    game.draw_groups()
 
     pygame.display.update() 
-    clock.tick(30)
+    clock.tick(60)

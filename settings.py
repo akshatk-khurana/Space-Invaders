@@ -1,8 +1,12 @@
-# Entity specifics
-PLAYER_HEALTH = 100
-ENEMY_HEALTH = 10
+# Enemy
+RARE_ENEMY_HEALTH = 10
+
+# Player
+PLAYER_HEALTH = 50
+
+# Projectile
 PROJECTILE_DAMAGE = 1
-PROJECTILE_SPEED = 5
+PROJECTILE_SPEED = 10
 
 # Screen dimensions
 SCREEN_WIDTH = 1000
