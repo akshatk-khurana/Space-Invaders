@@ -23,6 +23,7 @@ while True:
 
     
     game.check_collisions()
+    
     # Update & Draw
     game.update_groups(timer)
     game.draw_groups()

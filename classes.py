@@ -22,14 +22,7 @@ class Enemy(ABC):
         self.health -= amount
 
     def update(self):
-        if (self.health == 0):
-            self.kill()
         self.move()
-
-    def kill(self):
-        rarity = self.rarity
-        Sprite.kill()
-        return POINTS[rarity]
 
     def __repr__(self) -> str:
         return self.name
@@ -42,7 +35,6 @@ class Common_Enemy(Enemy, Sprite):
         self.health = COMMON_ENEMY_HEALTH
         self.name = "Common Enemy"
         self.rarity = "Common"
-        self.points = POINTS[rarity]
 
         self.image = pygame.image.load(ASSETS_PATH + "common_enemy.png")
         self.rect = self.image.get_rect(midbottom=(x, y))
@@ -143,7 +135,12 @@ class Projectile(Sprite):
     def check_collision(self, enemy):
         if self.rect.colliderect(enemy.rect):
             enemy.take_damage(self.damage)
+            if enemy.health == 0:
+                rarity = enemy.rarity
+                enemy.kill()
+                return POINTS[rarity]
             self.kill()
+        return 0
 
     def update(self):
         self.rect.y -= PROJECTILE_SPEED
@@ -163,11 +160,16 @@ class Game():
         self.player_group = GroupSingle()
     
     def generate_enemies(self):
+        # generate in waves
         pos = 50
         for i in range(10):
+            new = Rare_Enemy(pos, 75)
+            self.enemy_list.add(new)
+            pos += 60
+        for i in range(20):
             new = Common_Enemy(pos, 100)
             self.enemy_list.add(new)
-            pos += 100
+            pos += 60
         new = Ultra_Rare_Enemy(50, 50)
         self.enemy_list.add(new)
 
@@ -197,6 +199,3 @@ class Game():
         for projectile in self.projectile_list:
             for enemy in self.enemy_list:
                 self.__score += projectile.check_collision(enemy)
-                print(self.__score)
-
-                
