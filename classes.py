@@ -44,6 +44,7 @@ class Common_Enemy(Enemy, Sprite):
     
     def shoot(self):
         pass
+
 class Rare_Enemy(Sprite, Enemy):
     def __init__(self, x, y):
         Sprite.__init__(self)
@@ -80,6 +81,7 @@ class Rare_Enemy(Sprite, Enemy):
 
     def update(self):
         Enemy.update(self)
+
 class Ultra_Rare_Enemy(Enemy, Sprite):
     def __init__(self, x, y):
         Sprite.__init__(self)
@@ -146,8 +148,11 @@ class Projectile(Sprite):
             self.kill()
         return 0
 
-    def update(self):
+    def move(self):
         self.rect.y -= PROJECTILE_SPEED
+
+    def update(self):
+        self.move()
         if self.rect.y < 0:
             self.kill()
 
@@ -167,18 +172,19 @@ class Game():
         self.enemy_list = Group()
         self.projectile_list = Group()
         self.player_group = GroupSingle()
-    
-    def generate_enemies(self):
-        # generate in waves
-        for i in range(0, 200, 50):
-            self.generate_waves(Rare_Enemy, 50, i, 50)
 
-    def generate_waves(self, enemy, x, y, gap):
-        for i in range(10):
+    def generate_waves(self, enemy, x, y, gap, amount):
+        for i in range(amount):
             new = enemy(x, y)
             self.enemy_list.add(new)
             x += gap
 
+    def generate_enemies(self):
+        for i in range(100, 300, 50):
+            self.generate_waves(Rare_Enemy, 50, i, 50, 10)
+
+        for i in range(350, 450, 50):
+            self.generate_waves(Common_Enemy, 50, i, 50, 10)
 
     def is_game_over(self):
         pass

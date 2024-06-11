@@ -19,6 +19,7 @@ while True:
             pygame.quit(); sys.exit()
     
     if len(game.enemy_list.sprites()) == 0:
+        game.level += 1
         game.generate_enemies()
     
     game.check_collisions()
