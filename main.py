@@ -20,7 +20,6 @@ while True:
     
     if len(game.enemy_list.sprites()) == 0:
         game.generate_enemies()
-
     
     game.check_collisions()
     
@@ -28,7 +27,6 @@ while True:
     game.update_groups(timer)
     game.draw_groups()
 
-    timer = 100 if timer == 0 else timer + 1
-
-    pygame.display.update() 
+    timer = 100 if timer == 0 else timer + 1 
+    pygame.display.update()
     clock.tick(60)

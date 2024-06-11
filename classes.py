@@ -56,18 +56,22 @@ class Rare_Enemy(Sprite, Enemy):
         self.image = pygame.image.load(ASSETS_PATH + "rare_enemy.png")
         self.rect = self.image.get_rect(midbottom=(x, y))
 
+        self.max = 300
+        self.moved = 0
         self.direction = "R"
 
     def move(self):
         if self.direction == "R":
-            if self.rect.x < SCREEN_WIDTH:
-                self.rect.x += 5
+            if self.moved < self.max:
+                self.rect.x += 2
+                self.moved += 2
             else:
                 self.direction = "L"
 
         elif self.direction == "L":
-            if self.rect.x > 0:
-                self.rect.x -= 5
+            if self.moved > 0:
+                self.rect.x -= 2
+                self.moved -= 2
             else:
                 self.direction = "R"
     
@@ -151,9 +155,14 @@ class Game():
     def __init__(self) -> None:
         self.__score = 0
         self.level = 0
+        self.font = pygame.font.SysFont(None, 50)
 
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         pygame.display.set_caption("Space Invaders")
+
+        self.text = self.font.render(str(self.__score), True, WHITE)
+        self.text_rect = self.text.get_rect()
+        self.text_rect.center = (25, SCREEN_HEIGHT-25)
 
         self.enemy_list = Group()
         self.projectile_list = Group()
@@ -161,17 +170,15 @@ class Game():
     
     def generate_enemies(self):
         # generate in waves
-        pos = 50
+        for i in range(0, 200, 50):
+            self.generate_waves(Rare_Enemy, 50, i, 50)
+
+    def generate_waves(self, enemy, x, y, gap):
         for i in range(10):
-            new = Rare_Enemy(pos, 75)
+            new = enemy(x, y)
             self.enemy_list.add(new)
-            pos += 60
-        for i in range(20):
-            new = Common_Enemy(pos, 100)
-            self.enemy_list.add(new)
-            pos += 60
-        new = Ultra_Rare_Enemy(50, 50)
-        self.enemy_list.add(new)
+            x += gap
+
 
     def is_game_over(self):
         pass
@@ -191,11 +198,17 @@ class Game():
 
     def draw_groups(self):
         self.screen.fill(BLACK)
+        self.screen.blit(self.text, self.text_rect)
+
         self.player_group.draw(self.screen)
         self.projectile_list.draw(self.screen)
         self.enemy_list.draw(self.screen)
 
+    def update_score(self, amount):
+        self.__score += amount
+        self.text = self.font.render(str(self.__score), True, WHITE)
+
     def check_collisions(self):
         for projectile in self.projectile_list:
             for enemy in self.enemy_list:
-                self.__score += projectile.check_collision(enemy)
+                self.update_score(projectile.check_collision(enemy))
