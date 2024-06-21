@@ -39,5 +39,7 @@ BLUE = (0, 0, 255)
 
 # Miscellaneous
 ASSETS_PATH = "Assets/"
+
+# Not to be edited
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 600
