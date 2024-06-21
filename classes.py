@@ -13,7 +13,7 @@ from abc import ABC, abstractmethod
 from pygame.sprite import Sprite, Group, GroupSingle
 
 class Player(Sprite):
-    """To simulate the player in the game
+    """Simulate the player in the game
 
     Attributes:
         __health: An integer containing player heatlh
@@ -26,8 +26,8 @@ class Player(Sprite):
         coordinates.
 
         Args:
-          x: Integer for the x position.
-          y: Integer for the y position.
+          x: An integer for the x position.
+          y: An integer for the y position.
         """
 
         super().__init__()
@@ -54,6 +54,9 @@ class Player(Sprite):
                                 str(self))
 
     def move(self):
+        """Take input from the user to make the player
+        move in the chosen direction.
+        """
         keys = pygame.key.get_pressed()
 
         if keys[pygame.K_a] or keys[pygame.K_LEFT]:
@@ -70,7 +73,26 @@ class Player(Sprite):
         return "Player"
 
 class Projectile(Sprite):
+    """Create a template for projectiles in the game
+
+    Attributes:
+        fired_by: A string containing the name of the entity 
+        that instantiated the class.
+        image: Stores the loaded sprite for the projectile.
+        rect: A pygame rect object to store position.
+    """
+
     def __init__(self, damage, x, y, entity) -> None:
+        """Initialise custom and pygame attributes.
+
+        Args:
+            damage: An integer containing the damage to be given.
+            that instantiated the class.
+            x: An integer for the x position.
+            y: An integer for the y position.
+            entity: A string containing the name of the entity.
+        """
+        
         super().__init__()
 
         self.fired_by = entity
@@ -84,22 +106,35 @@ class Projectile(Sprite):
 
         self.rect = self.image.get_rect(midbottom=(x, y))
     
-    def check_collision(self, entity):  
+    def check_collision(self, entity):
+        """Check whether the projectile has collided with
+        another entity and execute appropriate game logic.
+
+        Args:
+            entity: A player or enemy object to check collision with.
+        """
+
+        # Store a record of the collision and a score if an enemy is shot
         info = {"collided": False, "score": 0}
 
         if self.rect.colliderect(entity.rect):
             info["collided"] = True
             if str(entity) != "Projectile":
+                # Enables polymorphism for enemy and player classes
                 entity.set_health(entity.get_health()-self.damage)
 
             if str(entity) == "Enemy":
+                # Polymorphism again, regardless of enemy class
                 if entity.get_health() == 0:
                     info["score"] = POINTS[entity.rarity]
                     entity.kill()
+
             self.kill()
         return info
     
     def move(self):
+        """To allow the projectiles to move based off settings.py"""
+
         if self.fired_by == "Player":
             self.rect.y -= PROJECTILE_SPEED
         elif self.fired_by == "Enemy":
@@ -115,6 +150,10 @@ class Projectile(Sprite):
 
 class Game():
     def __init__(self) -> None:
+        """Initialise needed game variables and display components.
+
+        Also set up pygame display and fonts.
+        """
         self.__score = 0
         self.font = pygame.font.SysFont(None, 50)
         self.big_font = pygame.font.SysFont(None, 100)
@@ -137,6 +176,7 @@ class Game():
         self.level = 0
     
     def generate_enemies(self):
+        
         offset = 50
         self.enemy_list.add(Ultra_Rare_Enemy(45, 60))
 
@@ -184,7 +224,7 @@ class Game():
 
     def update_groups(self, time):
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_SPACE] and time % 5 == 0:
+        if keys[pygame.K_SPACE] and time % 10 == 0:
             new = self.player_group.sprites()[0].shoot()
             self.projectile_list.add(new)
 
@@ -224,6 +264,7 @@ class Game():
                     collision = projectile.check_collision(enemy)
                     if collision["collided"] == True:
                         self.update_score(collision["score"])
+
             elif projectile.fired_by == "Enemy":
                 projectile.check_collision(self.player_group.sprites()[0])
                 for player_projectile in self.projectile_list:

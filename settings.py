@@ -11,12 +11,12 @@ URE equates to Ultra Rare Enemy
 """
 
 # Values relating to entities
-CE_HEALTH = 2
-RE_HEALTH = 4
+CE_HEALTH = 1
+RE_HEALTH = 2
 URE_HEALTH = 16
 PLAYER_HEALTH = 16
 
-PLAYER_SPEED = 5
+PLAYER_SPEED = 10
 CE_SPEED = 1
 RE_SPEED = 2
 
@@ -34,6 +34,8 @@ PROJECTILE_SPEED = 12
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 RED = (255, 0, 0)
+GREEN = (0, 255, 0)
+BLUE = (0, 0, 255)
 
 # Miscellaneous
 ASSETS_PATH = "Assets/"
