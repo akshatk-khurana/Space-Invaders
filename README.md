@@ -18,6 +18,12 @@ and movement patterns.
 - A game over screen is displayed once the player is out of health and this screen contains the player's final score and a Play Again button, if the player wants to play the game again.
 - While the enemy generation stays the same over the course of the game, as the player eliminates each wave of enemies, the frequency of enemies shooting increases (i.e they start shooting more often).
 
+## Controls
+The controls for this remake are outlined below;
+- space for shooting
+- left arrow/a to move left
+- right arrow/d to move right
+
 ## Settings.py
 The **settings.py** file is used to contain various numerical values that are better not being hardcoded into the **classes.py** so anyone running the game can 'customise' aspects including:
 - The starting player health and the health for each of the enemy types.
